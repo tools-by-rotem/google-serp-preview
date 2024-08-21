@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title, Slug, and Description Length Checker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<h1 style="text-align: center; font-size: 24px; margin-bottom: 20px; color: #333;">Google Serp Preview - תצוגה מקדימה לנראות בגוגל</h1>
+    <div class="tabs">
+        <div class="tab active" data-language="en">English</div>
+        <div class="tab" data-language="he">עברית</div>
+    </div>
+
+    <div id="en" class="tab-content ltr">
+        <label for="title-en">Enter Title:</label>
+        <input type="text" id="title-en" maxlength="70" placeholder="Write your title here">
+        <div class="gauge-container">
+            <div id="title-gauge-en" class="gauge"></div>
+            <div id="title-count-en" class="char-count">0/70</div>
+        </div>
+
+        <label for="slug-en">Enter Slug:</label>
+        <input type="text" id="slug-en" maxlength="130" placeholder="Write your slug here">
+
+        <label for="description-en">Enter Description:</label>
+        <textarea id="description-en" maxlength="180" placeholder="Write your description here"></textarea>
+        <div class="gauge-container">
+            <div id="description-gauge-en" class="gauge"></div>
+            <div id="description-count-en" class="char-count">0/180</div>
+        </div>
+
+        <div id="preview-en">
+            <div id="preview-title-en" style="font-size: 18px; font-weight: bold; color: #1a0dab;">Title</div>
+            <div id="preview-link-en" style="color: #006621; font-size: 14px;">example.com/slug</div>
+            <div id="preview-description-en" style="color: #545454; font-size: 13px;">Description</div>
+        </div>
+    </div>
+
+    <div id="he" class="tab-content active rtl">
+        <label for="title">הכניסו את הכותרת:</label>
+        <input type="text" id="title" maxlength="70" placeholder="כתבו כאן את הכותרת">
+        <div class="gauge-container">
+            <div id="title-gauge" class="gauge"></div>
+            <div id="title-count" class="char-count">0/70</div>
+        </div>
+
+        <label for="slug">הכניסו את הסלאג:</label>
+        <input type="text" id="slug" maxlength="130" placeholder="כתבו כאן את הסלאג">
+
+        <label for="description">הכניסו את התיאור:</label>
+        <textarea id="description" maxlength="180" placeholder="כתבו כאן את התיאור"></textarea>
+        <div class="gauge-container">
+            <div id="description-gauge" class="gauge"></div>
+            <div id="description-count" class="char-count">0/180</div>
+        </div>
+
+        <div id="preview">
+            <div id="preview-title">כותרת</div>
+            <div id="preview-link">example.co.il/slug</div>
+            <div id="preview-description">תיאור</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
