@@ -116,6 +116,10 @@
             font-weight: bold;
             line-height: 1.2;
             font-family: 'Roboto', sans-serif;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            white-space: pre-wrap;
         }
         #preview-link, #preview-link-en {
             color: #006621;
@@ -123,12 +127,19 @@
             margin-bottom: 5px;
             font-weight: normal;
             font-family: 'Roboto', sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         #preview-description, #preview-description-en {
             color: #545454;
             font-size: 13px;
             line-height: 1.4;
             font-family: 'Roboto', sans-serif;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            white-space: pre-wrap;
         }
     </style>
 </head>
@@ -149,7 +160,7 @@
             </div>
 
             <label for="slug-en">Enter Slug:</label>
-            <input type="text" id="slug-en" maxlength="130" placeholder="Write your slug here">
+            <input type="text" id="slug-en" maxlength="65" placeholder="Write your slug here">
 
             <label for="description-en">Enter Description:</label>
             <textarea id="description-en" maxlength="180" placeholder="Write your description here"></textarea>
@@ -159,9 +170,9 @@
             </div>
 
             <div id="preview-en">
-                <div id="preview-title-en" style="font-size: 18px; font-weight: bold; color: #1a0dab;">Title</div>
-                <div id="preview-link-en" style="color: #006621; font-size: 14px;">example.com/slug</div>
-                <div id="preview-description-en" style="color: #545454; font-size: 13px;">Description</div>
+                <div id="preview-title-en">Title</div>
+                <div id="preview-link-en">example.com/slug</div>
+                <div id="preview-description-en">Description</div>
             </div>
         </div>
 
@@ -174,7 +185,7 @@
             </div>
 
             <label for="slug">הכניסו את הסלאג:</label>
-            <input type="text" id="slug" maxlength="130" placeholder="כתבו כאן את הסלאג">
+            <input type="text" id="slug" maxlength="65" placeholder="כתבו כאן את הסלאג">
 
             <label for="description">הכניסו את התיאור:</label>
             <textarea id="description" maxlength="180" placeholder="כתבו כאן את התיאור"></textarea>
@@ -219,7 +230,14 @@
 
                 gauge.style.width = fillPercentage + '%';
                 count.textContent = `${length}/${maxLength}`;
-                preview.textContent = input.value || preview.dataset.placeholder;
+                
+                if (previewId.includes('description')) {
+                    formatText(input.value, preview, 70);
+                } else if (previewId.includes('title')) {
+                    formatText(input.value, preview, 49);
+                } else {
+                    preview.textContent = input.value || preview.dataset.placeholder;
+                }
 
                 if (length < minYellow) {
                     gauge.style.backgroundColor = '#ffcc00';
@@ -233,18 +251,47 @@
             });
         }
 
+        function formatText(text, previewElement, maxLineLength) {
+            const words = text.split(' ');
+            let currentLine = '';
+            let formattedText = '';
+            
+            for (let word of words) {
+                if ((currentLine + word).length > maxLineLength) {
+                    formattedText += currentLine.trim() + '\n';
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            formattedText += currentLine.trim();
+            
+            previewElement.textContent = formattedText || previewElement.dataset.placeholder;
+        }
+
+        function setupSlug(inputId, previewLinkId, domain) {
+            const input = document.getElementById(inputId);
+            const previewLink = document.getElementById(previewLinkId);
+
+            input.addEventListener('input', function() {
+                let slug = this.value.slice(0, 65);  // מגביל ל-65 תווים
+                previewLink.textContent = `${domain}/${slug}`;
+
+                // בדיקה אם ה-slug ארוך מדי ומקצר אותו אם צריך
+                const maxWidth = previewLink.offsetWidth;
+                while (previewLink.scrollWidth > maxWidth && slug.length > 0) {
+                    slug = slug.slice(0, -1);
+                    previewLink.textContent = `${domain}/${slug}...`;
+                }
+            });
+        }
+
         setupGauge('title', 'title-gauge', 'title-count', 'preview-title', 70, 50, 60);
         setupGauge('description', 'description-gauge', 'description-count', 'preview-description', 180, 155, 165);
         setupGauge('title-en', 'title-gauge-en', 'title-count-en', 'preview-title-en', 70, 50, 60);
         setupGauge('description-en', 'description-gauge-en', 'description-count-en', 'preview-description-en', 180, 155, 165);
 
-        document.getElementById('slug').addEventListener('input', function() {
-            document.getElementById('preview-link').textContent = `example.co.il/${this.value}` || 'example.co.il/slug';
-        });
-
-        document.getElementById('slug-en').addEventListener('input', function() {
-            document.getElementById('preview-link-en').textContent = `example.com/${this.value}` || 'example.com/slug';
-        });
+        setupSlug('slug', 'preview-link', 'example.co.il');
+        setupSlug('slug-en', 'preview-link-en', 'example.com');
     </script>
 </body>
 </html>
