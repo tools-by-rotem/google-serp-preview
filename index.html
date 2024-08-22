@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title, Slug, and Description Length Checker</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 20px;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            background-color: #fff;
+            transition: background-color 0.3s;
+        }
+        .tab.active {
+            background-color: #ddd;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .rtl {
+            direction: rtl;
+        }
+        .ltr {
+            direction: ltr;
+        }
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: 500;
+            color: #555;
+            font-family: 'Roboto', sans-serif;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+            font-family: 'Roboto', sans-serif; /* גופן אחיד */
+        }
+        input:focus, textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        .gauge-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            margin-top: 5px;
+            overflow: hidden;
+            border-radius: 5px;
+            position: relative;
+        }
+        .gauge {
+            height: 100%;
+            width: 0;
+            background-color: #ffcc00;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        .char-count {
+            position: absolute;
+            top: -20px;
+            right: 0;
+            margin-right: 10px;
+            font-size: 12px;
+            color: #666;
+            font-family: 'Roboto', sans-serif;
+        }
+        .ltr .char-count {
+            right: auto;
+            left: 0;
+        }
+        #preview, #preview-en {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        #preview-title, #preview-title-en {
+            color: #1a0dab;
+            font-size: 18px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            line-height: 1.2;
+            font-family: 'Roboto', sans-serif;
+        }
+        #preview-link, #preview-link-en {
+            color: #006621;
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: normal;
+            font-family: 'Roboto', sans-serif;
+        }
+        #preview-description, #preview-description-en {
+            color: #545454;
+            font-size: 13px;
+            line-height: 1.4;
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+	<h1 style="text-align: center; font-size: 24px; margin-bottom: 20px; color: #333;">  Google Serp Preview - תצוגה מקדימה לנראות בגוגל</h1>
+    <div class="tabs">
+        <div class="tab active" data-language="en">English</div>
+        <div class="tab" data-language="he">עברית</div>
+    </div>
+
+    <div id="en" class="tab-content ltr">
+        <label for="title-en">Enter Title:</label>
+        <input type="text" id="title-en" maxlength="70" placeholder="Write your title here">
+        <div class="gauge-container">
+            <div id="title-gauge-en" class="gauge"></div>
+            <div id="title-count-en" class="char-count">0/70</div>
+        </div>
+
+        <label for="slug-en">Enter Slug:</label>
+        <input type="text" id="slug-en" maxlength="130" placeholder="Write your slug here">
+
+        <label for="description-en">Enter Description:</label>
+        <textarea id="description-en" maxlength="180" placeholder="Write your description here"></textarea>
+        <div class="gauge-container">
+            <div id="description-gauge-en" class="gauge"></div>
+            <div id="description-count-en" class="char-count">0/180</div>
+        </div>
+
+        <div id="preview-en">
+            <div id="preview-title-en" style="font-size: 18px; font-weight: bold; color: #1a0dab;">Title</div>
+            <div id="preview-link-en" style="color: #006621; font-size: 14px;">example.com/slug</div>
+            <div id="preview-description-en" style="color: #545454; font-size: 13px;">Description</div>
+        </div>
+    </div>
+
+    <div id="he" class="tab-content active rtl">
+        <label for="title">הכניסו את הכותרת:</label>
+        <input type="text" id="title" maxlength="70" placeholder="כתבו כאן את הכותרת">
+        <div class="gauge-container">
+            <div id="title-gauge" class="gauge"></div>
+            <div id="title-count" class="char-count">0/70</div>
+        </div>
+
+        <label for="slug">הכניסו את הסלאג:</label>
+        <input type="text" id="slug" maxlength="130" placeholder="כתבו כאן את הסלאג">
+
+        <label for="description">הכניסו את התיאור:</label>
+        <textarea id="description" maxlength="180" placeholder="כתבו כאן את התיאור"></textarea>
+        <div class="gauge-container">
+            <div id="description-gauge" class="gauge"></div>
+            <div id="description-count" class="char-count">0/180</div>
+        </div>
+
+        <div id="preview">
+            <div id="preview-title">כותרת</div>
+            <div id="preview-link">example.co.il/slug</div>
+            <div id="preview-description">תיאור</div>
+        </div>
+    </div>
+
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const language = this.dataset.language;
+
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+
+                this.classList.add('active');
+                document.getElementById(language).classList.add('active');
+            });
+        });
+
+        function setupGauge(inputId, gaugeId, countId, previewId, maxLength, minYellow, maxYellow, minGreen, maxGreen) {
+            const input = document.getElementById(inputId);
+            const gauge = document.getElementById(gaugeId);
+            const count = document.getElementById(countId);
+            const preview = document.getElementById(previewId);
+
+            input.addEventListener('input', function() {
+                const length = input.value.length;
+                const fillPercentage = (length / maxLength) * 100;
+
+                gauge.style.width = fillPercentage + '%';
+                count.textContent = `${length}/${maxLength}`;
+                preview.textContent = input.value || preview.dataset.placeholder;
+
+                if (length < minYellow) {
+                    gauge.style.backgroundColor = '#ffcc00';
+                } else if (length <= maxYellow) {
+                    gauge.style.backgroundColor = '#28a745';
+                } else if (length <= minGreen) {
+                    gauge.style.backgroundColor = '#28a745';
+                } else {
+                    gauge.style.backgroundColor = '#dc3545';
+                }
+            });
+        }
+
+        setupGauge('title', 'title-gauge', 'title-count', 'preview-title', 70, 50, 60);
+        setupGauge('description', 'description-gauge', 'description-count', 'preview-description', 180, 155, 165);
+        setupGauge('title-en', 'title-gauge-en', 'title-count-en', 'preview-title-en', 70, 50, 60);
+        setupGauge('description-en', 'description-gauge-en', 'description-count-en', 'preview-description-en', 180, 155, 165);
+
+        document.getElementById('slug').addEventListener('input', function() {
+            document.getElementById('preview-link').textContent = `example.co.il/${this.value}` || 'example.co.il/slug';
+        });
+
+        document.getElementById('slug-en').addEventListener('input', function() {
+            document.getElementById('preview-link-en').textContent = `example.com/${this.value}` || 'example.com/slug';
+        });
+    </script>
+</body>
+</html>
+
