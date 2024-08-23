@@ -141,6 +141,17 @@
             hyphens: auto;
             white-space: pre-wrap;
         }
+        .domain-slug-container {
+            display: flex;
+            gap: 10px;
+            max-width: 500px;
+        }
+        .domain-input {
+            flex: 1;
+        }
+        .slug-input {
+            flex: 2;
+        }
     </style>
 </head>
 <body>
@@ -159,8 +170,11 @@
                 <div id="title-count-en" class="char-count">0/70</div>
             </div>
 
-            <label for="slug-en">Enter Slug:</label>
-            <input type="text" id="slug-en" maxlength="65" placeholder="Write your slug here">
+            <label>Enter URL:</label>
+            <div class="domain-slug-container">
+                <input type="text" id="domain-en" class="domain-input" placeholder="example.com">
+                <input type="text" id="slug-en" class="slug-input" maxlength="65" placeholder="Write your slug here">
+            </div>
 
             <label for="description-en">Enter Description:</label>
             <textarea id="description-en" maxlength="180" placeholder="Write your description here"></textarea>
@@ -184,8 +198,11 @@
                 <div id="title-count" class="char-count">0/70</div>
             </div>
 
-            <label for="slug">הכניסו את הסלאג:</label>
-            <input type="text" id="slug" maxlength="65" placeholder="כתבו כאן את הסלאג">
+            <label>הכניסו את כתובת ה-URL:</label>
+            <div class="domain-slug-container">
+                <input type="text" id="domain" class="domain-input" placeholder="example.co.il">
+                <input type="text" id="slug" class="slug-input" maxlength="65" placeholder="כתבו כאן את הסלאג">
+            </div>
 
             <label for="description">הכניסו את התיאור:</label>
             <textarea id="description" maxlength="180" placeholder="כתבו כאן את התיאור"></textarea>
@@ -268,21 +285,26 @@
             previewElement.textContent = formattedText || previewElement.dataset.placeholder;
         }
 
-        function setupSlug(inputId, previewLinkId, domain) {
-            const input = document.getElementById(inputId);
+        function setupSlugAndDomain(domainId, slugId, previewLinkId) {
+            const domainInput = document.getElementById(domainId);
+            const slugInput = document.getElementById(slugId);
             const previewLink = document.getElementById(previewLinkId);
 
-            input.addEventListener('input', function() {
-                let slug = this.value.slice(0, 65);  // מגביל ל-65 תווים
+            function updatePreview() {
+                let domain = domainInput.value.trim() || 'example.com';
+                let slug = slugInput.value.slice(0, 65);  // מגביל ל-65 תווים
                 previewLink.textContent = `${domain}/${slug}`;
 
-                // בדיקה אם ה-slug ארוך מדי ומקצר אותו אם צריך
+                // בדיקה אם ה-URL ארוך מדי ומקצר אותו אם צריך
                 const maxWidth = previewLink.offsetWidth;
                 while (previewLink.scrollWidth > maxWidth && slug.length > 0) {
                     slug = slug.slice(0, -1);
                     previewLink.textContent = `${domain}/${slug}...`;
                 }
-            });
+            }
+
+            domainInput.addEventListener('input', updatePreview);
+            slugInput.addEventListener('input', updatePreview);
         }
 
         setupGauge('title', 'title-gauge', 'title-count', 'preview-title', 70, 50, 60);
@@ -290,8 +312,8 @@
         setupGauge('title-en', 'title-gauge-en', 'title-count-en', 'preview-title-en', 70, 50, 60);
         setupGauge('description-en', 'description-gauge-en', 'description-count-en', 'preview-description-en', 180, 155, 165);
 
-        setupSlug('slug', 'preview-link', 'example.co.il');
-        setupSlug('slug-en', 'preview-link-en', 'example.com');
+        setupSlugAndDomain('domain', 'slug', 'preview-link');
+        setupSlugAndDomain('domain-en', 'slug-en', 'preview-link-en');
     </script>
 </body>
 </html>
